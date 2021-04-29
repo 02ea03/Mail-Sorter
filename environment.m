@@ -1,4 +1,4 @@
-clf
+clf;clc;clear all;close all;
 doCameraSpin = false;
 
 % Turn on a light (only turn on 1, don't keep turning them on), and make axis equal
@@ -135,4 +135,10 @@ surf([-8,-8;8,8],... %X
 [-7,8;-7,8],... %Y
 [0,0;0,0],... %Z (height in Z;plot in x)
 'CData',imread('green.jpg'),'FaceColor','texturemap');
+hold on;
+%% Robot
+robot = VP6242(false);
+q = zeros(1,6);
+robot.model.base = transl(0,0,0);
+robot.model.animate(q);
 hold on;
