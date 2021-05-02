@@ -50,9 +50,9 @@ end
 function PlotAndColourRobot(self)%robot,workspace)
     for linkIndex = 1:self.model.n
         if self.useGripper && linkIndex == self.model.n
-            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242',num2str(linkIndex),'Gripper.ply'],'tri'); %#ok<AGROW>
+            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link',num2str(linkIndex),'Gripper.ply'],'tri'); %#ok<AGROW>
         else
-            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>
+            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>
         end
         self.model.faces{linkIndex+1} = faceData;
         self.model.points{linkIndex+1} = vertexData;
