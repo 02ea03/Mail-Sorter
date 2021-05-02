@@ -4,7 +4,7 @@ classdef VP6242 < handle
         model;
         
         %>
-        workspace = [-10 10 10 -10 10 -0.3 10];   
+        workspace = [-10 5=10 -10 10 -0.3 10];   
         
         %> Flag to indicate if gripper is used
         useGripper = false;        
@@ -12,9 +12,9 @@ classdef VP6242 < handle
     
     methods%% Class for VP6242 robot simulation
 function self = VP6242(useGripper)
-%     if nargin < 1
-%         useGripper = false;
-%     end
+    if nargin < 1
+        useGripper = false;
+    end
     self.useGripper = useGripper;
 %> Define the boundaries of the workspace
 
@@ -31,7 +31,7 @@ function GetVP6242Robot(self)
 %     if nargin < 1
         % Create a unique name (ms timestamp after 1ms pause)
         pause(0.001);
-        name = ['VP6242',datestr(now,'yyyymmddTHHMMSSFFF')];
+        name = ['VP_6242_',datestr(now,'yyyymmddTHHMMSSFFF')];
 %     end
 
     % DnH
@@ -48,11 +48,11 @@ end
 % Given a robot index, add the glyphs (vertices and faces) and
 % colour them in if data is available 
 function PlotAndColourRobot(self)%robot,workspace)
-    for linkIndex = 1:self.model.n
+    for linkIndex = 0:self.model.n
         if self.useGripper && linkIndex == self.model.n
-            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link_',num2str(linkIndex),'Gripper.ply'],'tri'); %#ok<AGROW>
+            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link',num2str(linkIndex),'Gripper.ply'],'tri'); %#ok<AGROW>
         else
-            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link_',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>
+            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>
         end
         self.model.faces{linkIndex+1} = faceData;
         self.model.points{linkIndex+1} = vertexData;
