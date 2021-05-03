@@ -4,7 +4,7 @@ classdef VP6242 < handle
         model;
         
         %>
-        workspace = [-10 10 10 -10 10 -0.3 10];   
+        workspace = [-8 8 -8 8 0 8];   
         
         %> Flag to indicate if gripper is used
         useGripper = false;        
@@ -12,9 +12,9 @@ classdef VP6242 < handle
     
     methods%% Class for VP6242 robot simulation
 function self = VP6242(useGripper)
-%     if nargin < 1
-%         useGripper = false;
-%     end
+    if nargin < 1
+        useGripper = false;
+    end
     self.useGripper = useGripper;
 %> Define the boundaries of the workspace
 
@@ -31,17 +31,16 @@ function GetVP6242Robot(self)
 %     if nargin < 1
         % Create a unique name (ms timestamp after 1ms pause)
         pause(0.001);
-        name = ['VP6242',datestr(now,'yyyymmddTHHMMSSFFF')];
+        name = ['VP_6242_',datestr(now,'yyyymmddTHHMMSSFFF')];
 %     end
 
     % DnH
-
-    L1 = Link('d',0.125,'a',0,'alpha',pi/2,'offset',0,'qlim',deg2rad([-160 160]));
-    L2 = Link('d',0,'a',0.21,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
-    L3 = Link('d',0,'a',-0.075,'alpha',-pi/2,'offset',0,'qlim',deg2rad([19 160]));
-    L4 = Link('d',0.21,'a',0,'alpha',pi/2,'offset',0,'qlim',deg2rad([-160 160]));
-    L5 = Link('d',0.08535,'a',0,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-120 120]));
-    L6 = Link('d',0.07,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-360 360]));
+    L1 = Link('d',0,'a',0,'alpha',0,'offset',pi,'qlim',deg2rad([-160 160]));
+    L2 = Link('d',1.5,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
+    L3 = Link('d',1.25,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([19 160]));
+    L4 = Link('d',2.1,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-160 160]));
+    L5 = Link('d',0.75,'a',-0.75,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
+    L6 = Link('d',0,'a',-1.2,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-360 360]));
     self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name','VP6242');
 end
 %% PlotAndColourRobot
@@ -50,9 +49,10 @@ end
 function PlotAndColourRobot(self)%robot,workspace)
     for linkIndex = 1:self.model.n
         if self.useGripper && linkIndex == self.model.n
-            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link_',num2str(linkIndex),'Gripper.ply'],'tri'); %#ok<AGROW>
+            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link',num2str(linkIndex-1),'Gripper.ply'],'tri'); %#ok<AGROW>
         else
-            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link_',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>
+            display(['VP6242Link',num2str(linkIndex-1),'.PLY'])
+            [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['VP6242Link',num2str(linkIndex-1),'.PLY'],'tri'); %#ok<AGROW>
         end
         self.model.faces{linkIndex+1} = faceData;
         self.model.points{linkIndex+1} = vertexData;
