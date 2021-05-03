@@ -139,6 +139,6 @@ hold on;
 %% Robot
 robot = VP6242(false);
 q = zeros(1,6);
-robot.model.base = transl(0,0,0);
+robot.model.base = transl(0,0,3.2);
 robot.model.animate(q);
 hold on;
