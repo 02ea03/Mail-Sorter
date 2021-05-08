@@ -136,6 +136,28 @@ surf([-8,-8;8,8],... %X
 [0,0;0,0],... %Z (height in Z;plot in x)
 'CData',imread('green.jpg'),'FaceColor','texturemap');
 hold on;
+%% Papers
+[f,v,data] = plyread('paperCircle.ply','tri');
+vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
+for zOffset = [3.5]
+    for yOffset = [0]
+        for xOffset = [1.4]            
+            trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ...
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+        end
+    end
+end
+
+[f,v,data] = plyread('paperTri.ply','tri');
+vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
+for zOffset = [3.51]
+    for yOffset = [0]
+        for xOffset = [1.4]          
+            trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ...
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+        end
+    end
+end
 %% Robot
 robot = VP6242(false);
 q = zeros(1,6);
