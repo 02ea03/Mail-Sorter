@@ -2,21 +2,13 @@ clc
 clear all
 close all
 
-<<<<<<< Updated upstream
-L1 = Link('d',0,'a',0,'alpha',0,'offset',pi,'qlim',deg2rad([0 0]));
-L2 = Link('d',0.62,'a',0,'alpha',pi/2,'offset',0,'qlim',deg2rad([-120 120]));
-L3 = Link('d',0.42,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([19 160]));
-L4 = Link('d',0.85,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-160 160]));
-L5 = Link('d',0.30,'a',-0.32,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
-L6 = Link('d',0,'a',-0.52,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-360 360]));
-=======
-    L1 = Link('d',0,'a',0,'alpha',0,'offset',pi,'qlim',deg2rad([-160 160]));
-    L2 = Link('d',0.62,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
-    L3 = Link('d',0.42,'a',0,'alpha',pi/2,'offset',pi,'qlim',deg2rad([19 160]));
-    L4 = Link('d',0,'a',0.8,'alpha',pi,'offset',pi/2,'qlim',deg2rad([-160 160]));
-    L5 = Link('d',0,'a',0.3,'alpha',pi/2,'offset',0,'qlim',deg2rad([-120 120]));
-    L6 = Link('d',0,'a',0.52,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-360 360]));
->>>>>>> Stashed changes
+L1 = Link('d',0,'a',0,'alpha',0,'offset',pi,'qlim',deg2rad([-1 1]));
+L2 = Link('d',0.6,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-160 160]));
+L3 = Link('d',0.5,'a',0,'alpha',pi/2,'offset',pi,'qlim',deg2rad([180 200]));
+L4 = Link('d',0,'a',0.8,'alpha',0,'offset',pi/2,'qlim',deg2rad([-160 160]));
+L5 = Link('d',0,'a',0.3,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-120 120]));
+L6 = Link('d',0.6,'a',0,'alpha',pi/2,'offset',0,'qlim',deg2rad([-360 360]));
+
 VP6242 = SerialLink([L1 L2 L3 L4 L5 L6],'name','VP6242');
 
 workspace = [-5 5 -5 5 -5 5];   
@@ -38,21 +30,18 @@ VP6242.plot(q,'workspace',workspace,'scale',scale);
 %     JointLink(j,:) = (1-s(j))*initialq + s(j)*Brickq;
 %     VP6242.animate(JointLink(j,:))
 %     pause(0.01)
-<<<<<<< Updated upstream
 %    if j == steps
 %         disp(Brickq) %brick location
 %         disp(UR3.model.fkine(UR3.model.getpos))%end pos
 %         %disp(self.brick1Transform(1:3,4))%location
 %         pause
 %    end
-=======
 % %    if j == steps
 % %         disp(Brickq) %brick location
 % %         disp(UR3.model.fkine(UR3.model.getpos))%end pos
 % %         %disp(self.brick1Transform(1:3,4))%location
 % %         pause
 % %    end
->>>>>>> Stashed changes
 % end
 % BrickPos=VP6242.getpos
 % Brickq2= VP6242.ikcon(brickPose,BrickPos); % Pick up the brick
@@ -65,8 +54,4 @@ VP6242.plot(q,'workspace',workspace,'scale',scale);
 %     VP6242.animate(JointLink(j,:))
 %     pause(0.01)
 % end
-<<<<<<< Updated upstream
 
-=======
-% 
->>>>>>> Stashed changes

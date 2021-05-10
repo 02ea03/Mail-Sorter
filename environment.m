@@ -165,12 +165,13 @@ robot.model.base = transl(0,0,3.2);
 view(-15,21);
 robot.model.animate(q);
 hold on;
+pause(0.01);
 view(-15,21);
 %% Standing Position to Mail
 %function PosInit2Mail()
 % 1.1) Set parameters for the simulation
 t = 10;             % Total time (s)
-deltaT = 0.1;      % Control frequency
+deltaT = 0.05;      % Control frequency
 steps = t/deltaT;   % No. of steps for simulation
 delta = 2*pi/steps; % Small angle change
 epsilon = 0.1;      % Threshold value for manipulability/Damped Least Squares
@@ -248,10 +249,10 @@ for i = 1:steps-1
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
 % 1.5) Plot the results
-for 0:1:steps
-robot.model.animate(qMatrix(i,:))
-paperCircle %look video in resources
-end
+%for 0:1:steps
+robot.model.animate(qMatrix) %(i,:) need for loop
+%paperCircle %look video in resources
+%end
 view(-15,21);
 %end
 
