@@ -35,11 +35,11 @@ function GetVP6242Robot(self)
 %     end
 
     % DnH
-    L1 = Link('d',0,'a',0,'alpha',0,'offset',pi,'qlim',deg2rad([-160 160]));
-    L2 = Link('d',0.62,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
+    L1 = Link('d',0,'a',0,'alpha',0,'offset',pi,'qlim',deg2rad([-1 1]));
+    L2 = Link('d',0.62,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-160 160]));
     L3 = Link('d',0.42,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([19 160]));
-    L4 = Link('d',0.85,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-160 160]));
-    L5 = Link('d',0.30,'a',-0.32,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
+    L4 = Link('d',0,'a',0.85,'alpha',0,'offset',0,'qlim',deg2rad([-160 160]));
+    L5 = Link('d',0,'a',0.30,'alpha',0,'offset',0,'qlim',deg2rad([-120 120]));
     L6 = Link('d',0,'a',-0.52,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-360 360]));
     self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name','VP6242');
 end

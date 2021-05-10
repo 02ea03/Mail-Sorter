@@ -153,7 +153,7 @@ vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
 for zOffset = [3.51]
     for yOffset = [0]
         for xOffset = [1.4]          
-            trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ...
+            paperTri([1]) = trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... %delete(paperTri([1]) to delete the
         ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
     end
@@ -162,8 +162,10 @@ end
 robot = VP6242(false);
 q = zeros(1,6);
 robot.model.base = transl(0,0,3.2);
+view(-15,21);
 robot.model.animate(q);
 hold on;
+view(-15,21);
 %% Standing Position to Mail
 %function PosInit2Mail()
 % 1.1) Set parameters for the simulation
@@ -187,6 +189,7 @@ angleError = zeros(3,steps);    % For plotting trajectory error
 
 % 1.3) Set up trajectory, initial pose
 s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
+
 for i = 1 : size(steps,3)-1            % Collision (steps was tr)
     for faceIndex = 1:size(faces,1)
         vertOnPlane = vertex(faces(faceIndex,1)',:);
@@ -201,7 +204,7 @@ end
 for i=1:steps
     x(1,i) = (1-s(i))*2 + s(i)*2; % Points in x
     x(2,i) = (1-s(i))*0 + s(i)*0; % Points in y
-    x(3,i) = (1-s(i))*5 + s(i)*3.5; % Points in z
+    x(3,i) = (1-s(i))*5 + s(i)*3.6; % Points in z
     theta(1,i) = 0;                 % Roll angle 
     theta(2,i) = 5*pi/9;            % Pitch angle
     theta(3,i) = 0;                 % Yaw angle
@@ -225,7 +228,7 @@ for i = 1:steps-1
     deltaTheta = tr2rpy(Rd*Ra');                                            % Convert rotation matrix to RPY angles
     xdot = W*[linear_velocity;angular_velocity];                          	% Calculate end-effector velocity to reach next waypoint.
     J = robot.model.jacob0(qMatrix(i,:));                 % Get Jacobian at current joint state
-    m(i) = sqrt(det(J*J'));
+    m(i) = sqrt(round(det(J*J')));
     if m(i) < epsilon  % If manipulability is less than given threshold
         lambda = (1 - m(i)/epsilon)*5E-2;
     else
@@ -245,7 +248,11 @@ for i = 1:steps-1
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
 % 1.5) Plot the results
-robot.model.animate(qMatrix)
+for 0:1:steps
+robot.model.animate(qMatrix(i,:))
+paperCircle %look video in resources
+end
+view(-15,21);
 %end
 
 %% Mail to Right Box
