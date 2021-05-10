@@ -250,7 +250,7 @@ for i = 1:steps-1
 end
 % 1.5) Plot the results
 %for 0:1:steps
-robot.model.plot(qMatrix) %(i,:) need for loop
+robot.model.animate(qMatrix) %(i,:) need for loop
 %paperCircle %look video in resources
 %end
 view(-15,21);
