@@ -160,7 +160,7 @@ for zOffset = [3.51]
 end
 %% Robot
 robot = VP6242(false);
-q = zeros(1,6);
+q = deg2rad([0 30 90 -30 0 0]);
 robot.model.base = transl(0,0,3.2);
 view(-15,21);
 robot.model.animate(q);
@@ -181,7 +181,7 @@ W = diag([1 1 1 0.1 0.1 0.1]);    % Weighting matrix for the velocity vector
 %POS2 = transl(2,0,3.5);
 % 1.2) Allocate array data
 m = zeros(steps,1);             % Array for Measure of Manipulability
-qMatrix = zeros(steps,6);       % Array for joint anglesR
+qMatrix = zeros(steps,6);       % Array for joint angles
 qdot = zeros(steps,6);          % Array for joint velocities
 theta = zeros(3,steps);         % Array for roll-pitch-yaw angles
 x = zeros(3,steps);             % Array for x-y-z trajectory
@@ -203,9 +203,9 @@ for i = 1 : size(steps,3)-1            % Collision (steps was tr)
 end
 
 for i=1:steps
-    x(1,i) = (1-s(i))*2 + s(i)*2; % Points in x
-    x(2,i) = (1-s(i))*0 + s(i)*0; % Points in y
-    x(3,i) = (1-s(i))*5 + s(i)*3.6; % Points in z
+    x(1,i) = (1-s(i))*0.6 + s(i)*2; % Points in x
+    x(2,i) = (1-s(i))*0 + s(i)*1; % Points in y
+    x(3,i) = (1-s(i))*5.4 + s(i)*3.6; % Points in z
     theta(1,i) = 0;                 % Roll angle 
     theta(2,i) = 5*pi/9;            % Pitch angle
     theta(3,i) = 0;                 % Yaw angle
@@ -250,7 +250,7 @@ for i = 1:steps-1
 end
 % 1.5) Plot the results
 %for 0:1:steps
-robot.model.animate(qMatrix) %(i,:) need for loop
+robot.model.plot(qMatrix) %(i,:) need for loop
 %paperCircle %look video in resources
 %end
 view(-15,21);

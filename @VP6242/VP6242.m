@@ -36,9 +36,9 @@ function GetVP6242Robot(self)
 
     % DnH
 
-    L1 = Link('d',0,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-1 1]));
+    L1 = Link('d',0,'a',0,'alpha',0,'offset',pi,'qlim',deg2rad([0 0]));
     L2 = Link('d',0.6,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-360 360]));
-    L3 = Link('d',0.5,'a',0,'alpha',pi/2,'offset',pi,'qlim',deg2rad([-270 270]));
+    L3 = Link('d',0.5,'a',0,'alpha',pi/2,'offset',pi,'qlim',deg2rad([0 200]));
     L4 = Link('d',0,'a',0.8,'alpha',0,'offset',pi/2,'qlim',deg2rad([-160 160]));
     L5 = Link('d',0,'a',0.3,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-120 120]));
     L6 = Link('d',-0.6,'a',0,'alpha',pi/2,'offset',0,'qlim',deg2rad([-360 360]));
