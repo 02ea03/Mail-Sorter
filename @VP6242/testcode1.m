@@ -4,7 +4,7 @@ close all
 
 L1 = Link('d',0.5,'a',0,'alpha',pi/2,'offset',0,'qlim',deg2rad([-160 160]));
 L2 = Link('d',0,'a',0.84,'alpha',0,'offset',pi/2,'qlim',deg2rad([-40 120]));
-L3 = Link('d',0,'a',0.3,'alpha',-pi/2,'offset',-pi/2,'qlim',deg2rad([30 160]));
+L3 = Link('d',0,'a',0.3,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-140 90]));
 L4 = Link('d',0.84,'a',0,'alpha',pi/2,'offset',0,'qlim',deg2rad([-160 160]));
 L5 = Link('d',0,'a',0,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-120 120]));
 L6 = Link('d',0.28,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-360 360]));
@@ -14,6 +14,27 @@ VP6242 = SerialLink([L1 L2 L3 L4 L5 L6],'name','VP6242');
 workspace = [-5 5 -5 5 -5 5];   
 scale = 0.5; 
 VP6242.teach()
+
+%%
+camlight;
+view(3)
+axis equal;
+hold on;
+
+
+location  = [-2,-3.55,3.1];        % location of proposed safety infrastructure % mounting position for fences,desk
+[f,v,data] = plyread('VP6242Link5.ply','tri');
+vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
+
+for zOffset = location(1,3)
+    for yOffset = location(1,2)
+        for xOffset = location(1,1)
+         trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ...
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+        end
+    end
+end
+hold on;
 % q = (deg2rad([30,30,35,-30,0,0]));  
 % VP6242.plot(q,'workspace',workspace,'scale',scale);
 %EEpose = robot.fkine(deg2rad(q))
