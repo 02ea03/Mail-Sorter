@@ -217,10 +217,10 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*-1.12 + s(i)*1.5  ; % Points in x
     x(2,i) = (1-s(i))*0 + 2*sin(i*delta/2); % Points in y
-    x(3,i) = (1-s(i))*4.84 + s(i)*4; % Points in z
-    theta(1,i) = 0;                 % Roll angle 
-    theta(2,i) = 5*pi/9;            % Pitch angle
-    theta(3,i) = 0;                 % Yaw angle
+    x(3,i) = (1-s(i))*4.84 + s(i)*4.1; % Points in z
+    theta(1,i) = (1-s(i))*0 + s(i)*163*pi/180;                 % Roll angle 
+    theta(2,i) = (1-s(i))*5*pi/9 + s(i)*pi/10;            % Pitch angle
+    theta(3,i) = (1-s(i))*0 + s(i)*-2*pi/9;            % Yaw angle
 end
  
 T = [rpy2r(theta(1,1),theta(2,1),theta(3,1)) x(:,1);zeros(1,3) 1];          % Create transformation of first point and angle
@@ -292,7 +292,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*1.5 + s(i)*-1; % Points in x
     x(2,i) = (1-s(i))*0 - sin(i*delta/2)-s(i)*2; % Points in y
-    x(3,i) = (1-s(i))*4 + s(i)*4.2;     % Points in z
+    x(3,i) = (1-s(i))*4.2 + s(i)*4.2;     % Points in z
     theta(1,i) = 0;                 % Roll angle 
     theta(2,i) = 5*pi/9;            % Pitch angle
     theta(3,i) = 0;                 % Yaw angle
