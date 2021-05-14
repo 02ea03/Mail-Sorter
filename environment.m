@@ -173,7 +173,7 @@ L5 = Link('d',0,'a',0,'alpha',-pi/2,'offset',0,'qlim',deg2rad([-120 120]));
 L6 = Link('d',0.28,'a',0,'alpha',0,'offset',0,'qlim',deg2rad([-360 360]));
 robot = SerialLink([L1 L2 L3 L4 L5 L6],'name','VP6242');
 q = deg2rad([0 0 0 0 0 0]);
-scale=0.5;
+scale=0.6;
 workspace=[-10 10 -10 10 -0.1 10];
 robot.base = transl(0,0,3.2);
 view(-15,21);
