@@ -21,7 +21,6 @@ for zOffset = location(1,3)
     end
 end
 hold on;
-
 %% fire_extinguisher
     [f,v,data] = plyread('fire_extinguisher01.ply','tri');
     vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
@@ -73,7 +72,29 @@ hold on;
                  end
         end
     end
-    %% red frence
+    %% wall alarm
+    [f,v,data] = plyread('wallalarm.ply','tri');
+    vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
+    for xOffset = [7.8]
+        for yOffset = [0]
+                 for zOffset = [3]
+           trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ...
+                ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+                 end
+        end
+    end
+     %% first aid
+    [f,v,data] = plyread('firstaidbox.ply','tri');
+    vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
+    for xOffset = [0]
+        for yOffset = [7.8]
+                 for zOffset = [3]
+           trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ...
+                ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+                 end
+        end
+    end
+    %% red fence
     [f,v,data] = plyread('redfence.ply','tri');
     vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
 
