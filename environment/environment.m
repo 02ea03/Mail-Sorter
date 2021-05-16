@@ -11,7 +11,6 @@ hold on;
 location  = [-2,-3.55,3.1];        % location of proposed safety infrastructure % mounting position for fences,desk
 [f,v,data] = plyread('button01.ply','tri');
 vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
-
 for zOffset = location(1,3)
     for yOffset = location(1,2)
         for xOffset = location(1,1)
