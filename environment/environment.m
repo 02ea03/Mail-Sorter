@@ -105,13 +105,13 @@ hold on;
         end
     end
     
-         %% wall 2 
+         %% wall  
 
     [fWall,vWall,data] = plyread('Wall.ply','tri');
     vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
 
     for xOffset = [0.3]
-        for yOffset = [2.1]
+        for yOffset = [2]
                  for zOffset = [3.1]
            wallV([1]) = trisurf(fWall,vWall(:,1) + xOffset,vWall(:,2) + yOffset, vWall(:,3) + zOffset ...
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
