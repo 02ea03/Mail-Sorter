@@ -256,11 +256,11 @@ end
 
 T = [rpy2r(theta(1,1),theta(2,1),theta(3,1)) x(:,1);zeros(1,3) 1];          % Create transformation of first point and angle
 q0 = zeros(1,6);                                                            % Initial guess for joint angles
-qMatrix(1,:) = robotDenso.ikcon(T,q0);                                            % Solve joint angles to achieve first waypoint
+qMatrix(1,:) = robotDenso.ikcon(T,q0);                                      % Solve joint angles to achieve first waypoint
 
 % 1.4) Track the trajectory with RMRC
 for i = 1:steps-1
-    T = robotDenso.fkine(qMatrix(i,:));                                           % Get forward transformation at current joint state
+    T = robotDenso.fkine(qMatrix(i,:));                                     % Get forward transformation at current joint state
     deltaX = x(:,i+1) - T(1:3,4);                                         	% Get position error from next waypoint
     Rd = rpy2r(theta(1,i+1),theta(2,i+1),theta(3,i+1));                     % Get next RPY angles, convert to rotation matrix
     Ra = T(1:3,1:3);                                                        % Current end-effector rotation matrix
@@ -314,7 +314,7 @@ end
 
 % Plot the results
 for i=1:steps-1
-    robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
+    robotDenso.animate(qMatrix(i,:)); %plot the robot
 end
 pause(1);
 %% Mail to Pink Box
@@ -375,9 +375,9 @@ for i = 1:steps-1
     invJ = inv(J'*J + lambda *eye(6))*J';                                   % DLS Inverse
     qdot(i,:) = (invJ*xdot)';                                                % Solve the RMRC equation (you may need to transpose the         vector)
     for j = 1:6                                                             % Loop through joints 1 to 6
-        if qMatrix(i,j) + deltaT*qdot(i,j) < robotDenso.qlim(j,1)                     % If next joint angle is lower than joint limit...
+        if qMatrix(i,j) + deltaT*qdot(i,j) < robotDenso.qlim(j,1)           % If next joint angle is lower than joint limit...
             qdot(i,j) = 0; % Stop the motor
-        elseif qMatrix(i,j) + deltaT*qdot(i,j) > robotDenso.qlim(j,2)                 % If next joint angle is greater than joint limit ...
+        elseif qMatrix(i,j) + deltaT*qdot(i,j) > robotDenso.qlim(j,2)       % If next joint angle is greater than joint limit ...
             qdot(i,j) = 0; % Stop the motor
         end
     end
@@ -409,20 +409,20 @@ end
 
 % Plot the results
 for i=1:steps-1
-    delete(paperCircle([2]));
-    posEE=robotDenso.fkine(qMatrix(i,:));
-    xOffset = posEE(1,4);
-    yOffset = posEE(2,4);
-    zOffset = posEE(3,4)-0.175;
+    delete(paperCircle([2]));   %Deleting paper
+    posEE=robotDenso.fkine(qMatrix(i,:));   %gets the end-effector in terms of 4x4 matrix
+    xOffset = posEE(1,4);   %x of end-effector
+    yOffset = posEE(2,4);   %y of end-effector
+    zOffset = posEE(3,4)-0.175; %z of end-effector and positioning paper to be under the gripper
     paperCircle([2])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-    robotDenso.animate(qMatrix(i,:));
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');   %Replot the paper
+    robotDenso.animate(qMatrix(i,:)); %plot the robot
 end
 pause(1);
 delete(paperCircle([2]));
-zOffset = [3.15];
+zOffset = [3.15];    %drop off (z coodinate change)
 paperCircle([2])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat'); %Replot the paper
 pause(1);
 %% Pink Box to Mail
 % 1.1) Set parameters for the simulation
@@ -513,7 +513,7 @@ end
 
 % Plot the results
 for i=1:steps-1
-    robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
+    robotDenso.animate(qMatrix(i,:)); % plotting the robot movements
 end
 pause(1);
 %% Mail to Blue Box
@@ -543,7 +543,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*1.6 + s(i)*-0.9; % Points in x
     x(2,i) = (1-s(i))*0.01 + s(i)*1.16; % Points in y
-    x(3,i) = (1-s(i))*4 + sin(i*delta/2) + s(i)*4.2;     % Points in z
+    x(3,i) = (1-s(i))*4 + 0.5*sin(i*delta/2) + s(i)*4.2;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180;   % Roll angle 
     theta(2,i) = (1-s(i))*1*pi/180 + s(i)*0.29*pi/180;      % Pitch angle
     theta(3,i) = (1-s(i))*-0.01*pi/18 + s(i)*80.48*pi/180;  %yaw angle
@@ -556,7 +556,7 @@ qMatrix(1,:) = robotDenso.ikcon(T,q0);                                          
 for i = 1:steps-1
     T = robotDenso.fkine(qMatrix(i,:));                                           % Get forward transformation at current joint state
     deltaX = x(:,i+1) - T(1:3,4);                                         	% Get position error from next waypoint
-    Rd = rpy2r(theta(1,i+1),theta(2,i+1),theta(3,i+1));                     % Get next RPY angles, convert to rotation matrix
+    Rd = rpy2r(theta(1,i+1),theta(2,i+1),theta(3,i+1));                     % Get next Roll Pitch Yaw angles, convert to rotation matrix
     Ra = T(1:3,1:3);                                                        % Current end-effector rotation matrix
     Rdot = (1/deltaT)*(Rd - Ra);                                                % Calculate rotation matrix error
     S = Rdot*Ra';                                                           % Skew symmetric!
@@ -609,19 +609,19 @@ end
 % Plot the results
 for i=1:steps-1
     delete(paperTri([4]));
-    posEE=robotDenso.fkine(qMatrix(i,:));
-    xOffset = posEE(1,4);
-    yOffset = posEE(2,4);
-    zOffset = posEE(3,4)-0.175;
+    posEE=robotDenso.fkine(qMatrix(i,:)); %gets the end-effector in terms of 4x4 matrix
+    xOffset = posEE(1,4);   %x of end-effector
+    yOffset = posEE(2,4);   %y of end-effector
+    zOffset = posEE(3,4)-0.175; %z of end-effector and positioning paper to be under the gripper
     paperTri([4])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-    robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat'); %replot paperTri
+    robotDenso.animate(qMatrix(i,:)); %replot robot
 end
 pause(1);
 delete(paperTri([4]));
-zOffset = [3.15];
+zOffset = [3.15]; %setting the z to drop the paper off
 paperTri([4])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat'); %replor paper
 pause(1);
 %% Blue to Mail
 % 1.1) Set parameters for the simulation
@@ -647,7 +647,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*-0.9 + s(i)*1.6; % Points in x
     x(2,i) = (1-s(i))*1.16 +s(i)*0; % Points in y
-    x(3,i) = (1-s(i))*4.2  +sin(i*delta/2)+ s(i)*4;     % Points in z
+    x(3,i) = (1-s(i))*4.2  +0.5*sin(i*delta/2)+ s(i)*4;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180; % Roll angle 
     theta(2,i) = (1-s(i))*0.29*pi/180 + s(i)*1*pi/180;  % Pitch angle
     theta(3,i) = (1-s(i))*80.48*pi/180 + s(i)*-0.01*pi/18; %yaw angle
@@ -743,7 +743,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*1.6 + s(i)*-0.9; % Points in x
     x(2,i) = (1-s(i))*0.01 + s(i)*1.16; % Points in y
-    x(3,i) = (1-s(i))*4 +sin(i*delta/2)+ s(i)*4.2;     % Points in z
+    x(3,i) = (1-s(i))*4 +0.5*sin(i*delta/2)+ s(i)*4.2;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180;   % Roll angle 
     theta(2,i) = (1-s(i))*1*pi/180 + s(i)*0.29*pi/180;      % Pitch angle
     theta(3,i) = (1-s(i))*-0.01*pi/18 + s(i)*80.48*pi/180;  %yaw angle
@@ -810,19 +810,19 @@ end
 %  Plot the results
 for i=1:steps-1
     delete(paperTri([3]));
-    posEE=robotDenso.fkine(qMatrix(i,:));
-    xOffset = posEE(1,4);
-    yOffset = posEE(2,4);
-    zOffset = posEE(3,4)-0.175;
+    posEE=robotDenso.fkine(qMatrix(i,:)); %gets the end-effector in terms of 4x4 matrix
+    xOffset = posEE(1,4);   %x of end-effector
+    yOffset = posEE(2,4);   %y of end-effector
+    zOffset = posEE(3,4)-0.175; %z of end-effector and positioning paper to be under the gripper
     paperTri([3])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-    robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat'); %Replot paperTri
+    robotDenso.animate(qMatrix(i,:)); %replot the robot
 end
 pause(1);
-delete(paperTri([3]));
-zOffset = [3.16];
+delete(paperTri([3])); 
+zOffset = [3.16]; %setting the z to drop the paper off
 paperTri([3])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat'); %Replot paperTri
 pause(1);
 %% Blue to Mail (second time)
 % 1.1) Set parameters for the simulation
@@ -848,7 +848,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*-0.9 + s(i)*1.6; % Points in x
     x(2,i) = (1-s(i))*1.16 +s(i)*0; % Points in y
-    x(3,i) = (1-s(i))*4.2 +sin(i*delta/2)+ s(i)*4;     % Points in z
+    x(3,i) = (1-s(i))*4.2 +0.5*sin(i*delta/2)+ s(i)*4;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180; % Roll angle 
     theta(2,i) = (1-s(i))*0.29*pi/180 + s(i)*1*pi/180;  % Pitch angle
     theta(3,i) = (1-s(i))*80.48*pi/180 + s(i)*-0.01*pi/18; %yaw angle
@@ -1009,19 +1009,19 @@ end
 % Plot the results
 for i=1:steps-1
     delete(paperCircle([1]));
-    posEE=robotDenso.fkine(qMatrix(i,:));
-    xOffset = posEE(1,4);
-    yOffset = posEE(2,4);
-    zOffset = posEE(3,4)-0.175;
+    posEE=robotDenso.fkine(qMatrix(i,:)); %gets the end-effector in terms of 4x4 matrix
+    xOffset = posEE(1,4);   %x of end-effector
+    yOffset = posEE(2,4);   %y of end-effector
+    zOffset = posEE(3,4)-0.175; %z of end-effector and positioning paper to be under the gripper
     paperCircle([1])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-    robotDenso.animate(qMatrix(i,:));
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat'); %replot the paperCircle
+    robotDenso.animate(qMatrix(i,:)); %replot the robot
 end
 pause(1);
 delete(paperCircle([1]));
-zOffset = [3.16];
+zOffset = [3.16]; %setting the z to drop the paper off
 paperCircle([1])= trisurf(f,v(:,1) + xOffset,v(:,2) + yOffset, v(:,3) + zOffset ... 
-        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+        ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat'); %replot the paperCircle
 pause(1);
 %% Pink Box to Mail (second time)
 % 1.1) Set parameters for the simulation
