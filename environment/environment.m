@@ -33,7 +33,7 @@ hold on;
         end
     end
   
-    
+  
 %% box pink
 
     [f,v,data] = plyread('boxpink.ply','tri');
