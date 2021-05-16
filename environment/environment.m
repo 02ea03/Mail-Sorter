@@ -222,6 +222,40 @@ for zOffset = [3.52]
     end
 end
 display('Finished Loading Background')
+%% option 1
+%setting up the light curtain
+n=10;
+posLight = zeros(n,9);
+for i = 1:n
+    x1(i,:) = 2.4;
+    x2(i,:) = 2.4;
+    x3(i,:) = -2.4;
+    x4(i,:) = -2.4;    
+    y1(i,:) = 3.6;
+    y2(i,:) = -3.6;
+    y3(i,:) = -3.6;
+    y4(i,:) = 3.6;    
+    z(i,:) = i;
+    
+    posLight(i,1) = x1(i,:);
+    posLight(i,2) = x2(i,:);
+    posLight(i,3) = x3(i,:);
+    posLight(i,4) = x4(i,:);
+    posLight(i,5) = y1(i,:);
+    posLight(i,6) = y2(i,:);
+    posLight(i,7) = y3(i,:);
+    posLight(i,8) = y4(i,:);
+    posLight(i,9) = z(i,:);
+end
+%plotting
+
+for i = 1:n
+    xT = [posLight(i,1), posLight(i,2), posLight(i,3), posLight(i,4),posLight(i,1)];
+    yT = [posLight(i,5),posLight(i,6),posLight(i,7),posLight(i,8),posLight(i,5)];
+    zT = [posLight(i,9),posLight(i,9),posLight(i,9),posLight(i,9),posLight(i,9)];
+    plot3([xT],[yT],[zT]);
+end
+view(-15,21);
 %% Robot
 %robotDenso = VP6242(false);
 %q = deg2rad([0 0 0 0 0 0]);
@@ -1144,7 +1178,140 @@ for i=1:steps-1
     robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
 end
 pause(1);
+%% Mail to start (dont need to run)
 
+%NOT FINISHED For some reason i cannot delete tempBall
+
+% 1.1) Set parameters for the simulation
+t = 10;             % Total time (s)
+deltaT = 0.1;      % Control frequency
+steps = t/deltaT;   % No. of steps for simulation
+delta = 2*pi/steps; % Small angle change
+epsilon = 0.1;      % Threshold value for manipulability/Damped Least Squares
+W = diag([1 1 1 0.1 0.1 0.1]);    % Weighting matrix for the velocity vector
+
+% 1.2) Allocate array data
+m = zeros(steps,1);             % Array for Measure of Manipulability
+qMatrix = zeros(steps,6);       % Array for joint angles
+qdot = zeros(steps,6);          % Array for joint velocities
+theta = zeros(3,steps);         % Array for roll-pitch-yaw angles
+x = zeros(3,steps);             % Array for x-y-z trajectory
+positionError = zeros(3,steps); % For plotting trajectory error
+angleError = zeros(3,steps);    % For plotting trajectory error
+
+% 1.3) Set up trajectory, initial pose
+s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
+
+for i=1:steps
+    x(1,i) = (1-s(i))*1.6 + s(i)*-1.12; % Points in x
+    x(2,i) = (1-s(i))*0 + 1.5*sin(i*delta/2); % Points in y
+    x(3,i) = (1-s(i))*4 + sin(i*delta/2)+s(i)*4.8;     % Points in z
+    theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*0; % Roll angle 
+    theta(2,i) = (1-s(i))*1*pi/180 + s(i)*-pi/2;  % Pitch angle
+    theta(3,i) = (1-s(i))*-176*pi/180 + s(i)*0; %yaw angle
+end
+T = [rpy2r(theta(1,1),theta(2,1),theta(3,1)) x(:,1);zeros(1,3) 1];          % Create transformation of first point and angle
+q0 = zeros(1,6);                                                            % Initial guess for joint angles
+qMatrix(1,:) = robotDenso.ikcon(T,q0);                                            % Solve joint angles to achieve first waypoint
+
+% 1.4) Track the trajectory with RMRC
+for i = 1:steps-1
+    T = robotDenso.fkine(qMatrix(i,:));                                           % Get forward transformation at current joint state
+    deltaX = x(:,i+1) - T(1:3,4);                                         	% Get position error from next waypoint
+    Rd = rpy2r(theta(1,i+1),theta(2,i+1),theta(3,i+1));                     % Get next RPY angles, convert to rotation matrix
+    Ra = T(1:3,1:3);                                                        % Current end-effector rotation matrix
+    Rdot = (1/deltaT)*(Rd - Ra);                                                % Calculate rotation matrix error
+    S = Rdot*Ra';                                                           % Skew symmetric!
+    linear_velocity = (1/deltaT)*deltaX;
+    angular_velocity = [S(3,2);S(1,3);S(2,1)];                              % Check the structure of Skew Symmetric matrix!!
+    deltaTheta = tr2rpy(Rd*Ra');                                            % Convert rotation matrix to RPY angles
+    xdot = W*[linear_velocity;angular_velocity];                          	% Calculate end-effector velocity to reach next waypoint.
+    J = robotDenso.jacob0(qMatrix(i,:));                 % Get Jacobian at current joint state
+    m(i) = sqrt(round(det(J*J')));
+    if m(i) < epsilon                                                       % If manipulability is less than given threshold
+        lambda = (1 - m(i)/epsilon)*5E-2;
+    else
+        lambda = 0;
+    end
+    invJ = inv(J'*J + lambda *eye(6))*J';                                   % DLS Inverse
+    qdot(i,:) = (invJ*xdot)';                                                % Solve the RMRC equation (you may need to transpose the         vector)
+    for j = 1:6                                                             % Loop through joints 1 to 6
+        if qMatrix(i,j) + deltaT*qdot(i,j) < robotDenso.qlim(j,1)                     % If next joint angle is lower than joint limit...
+            qdot(i,j) = 0; % Stop the motor
+        elseif qMatrix(i,j) + deltaT*qdot(i,j) > robotDenso.qlim(j,2)                 % If next joint angle is greater than joint limit ...
+            qdot(i,j) = 0; % Stop the motor
+        end
+    end
+    qMatrix(i+1,:) = qMatrix(i,:) + deltaT*qdot(i,:);                         	% Update next joint state based on joint velocities
+    positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
+    angleError(:,i) = deltaTheta;                                           % For plotting
+end
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+
+    qMatrix = robotDenso.ikcon(newRoute);
+   
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+% LightCurtain collision
+boxLight = collisionBox(4.8,7.2,10); %(length x,width y,hight z)
+ballLight = collisionSphere(0.25); %(radius)
+transBall = trvec2tform([-10 -3 0]); %translating (transl)
+transBox = trvec2tform([0 0 5]); %translating (transl)
+ballBox.Pose = transBox;
+ballLight.Pose = transBall;
+hold on;
+axis([-10 10 -10 10 -1 10]);
+tempBall = show(ballLight);
+n = 10;
+for i = 0:0.5:n
+    newX=-n+i;
+    newY=-3+3*(i/n);
+    newZ=4*sin(i/4);
+    transBall = trvec2tform([newX newY newZ]);
+    ballLight.Pose = transBall;
+    tempBall = show(ballLight);
+    pause(0.1);
+    [areIntersecting,dist,witnessPoints] = checkCollision(boxLight,ballLight); %collision check
+    if areIntersecting == 1
+        display('unknown object near by, stopping robot')
+        pause(); %robot has to stop
+        for i = 0:0.5:n %bouncing back / ball no longer intersecting with the light curtain
+            newXup=newX-i;
+            newYup=-i/n;
+            newZup=newZ+2*sin(i/5);
+            transBall = trvec2tform([newXup newYup newZup]);
+            ballLight.Pose = transBall;
+            tempBall = show(ballLight);
+            pause(0.1);
+        end
+        break;
+    end
+end
+%pause();
+%delete(tempBall);
+display('No unknown ojbect, continuing')
+% Plot the results
+for i=1:steps-1
+    robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
+end
+pause(1);
 
 
 
