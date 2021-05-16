@@ -317,13 +317,14 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
     newRoute = robotDenso.fkine(qMatrix)+ goUp;
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
   
     else
     words=['No collision found in the trajectory!'];
@@ -412,13 +413,14 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
-
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
+    
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
     newRoute = robotDenso.fkine(qMatrix)+ goUp;
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
   
     else
     words=['No collision found in the trajectory!'];
@@ -516,13 +518,14 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
     newRoute = robotDenso.fkine(qMatrix)+ goUp;
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
   
     else
     words=['No collision found in the trajectory!'];
@@ -611,6 +614,7 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
@@ -618,7 +622,7 @@ while(1)
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
 
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
    
     else
     words=['No collision found in the trajectory!'];
@@ -715,6 +719,7 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
@@ -722,7 +727,7 @@ while(1)
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
 
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
    
     else
     words=['No collision found in the trajectory!'];
@@ -811,6 +816,7 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
@@ -818,7 +824,7 @@ while(1)
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
 
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
    
     else
     words=['No collision found in the trajectory!'];
@@ -916,6 +922,7 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
@@ -923,7 +930,7 @@ while(1)
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
 
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
    
     else
     words=['No collision found in the trajectory!'];
@@ -1010,6 +1017,7 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
@@ -1017,7 +1025,7 @@ while(1)
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
 
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
    
     else
     words=['No collision found in the trajectory!'];
@@ -1114,6 +1122,7 @@ while(1)
     faces = fWall;
     vertex = vWall;
     faceNormals = faceNormalsWall;
+    goUp = [0,0,0,0;0,0,0,0;0,0,0,0.1;0,0,0,0];
 
     if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
     disp('Collision detected!!');
@@ -1121,7 +1130,7 @@ while(1)
     newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
     newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
 
-    qMatrixx = robotDenso.ikcon(newRoute);
+    qMatrix = robotDenso.ikcon(newRoute);
    
     else
     words=['No collision found in the trajectory!'];
