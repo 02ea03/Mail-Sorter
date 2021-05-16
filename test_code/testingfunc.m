@@ -28,6 +28,31 @@ lambda = 0.6; %gain of the controler
 depth = mean (P(1,:)); %depth of the IBVS
 Tc0= robotDenso.fkine(q0);
 cam.plot_camera('Tcam',Tc0, 'label','scale',0.5);
+
+plot_sphere(P, 0.05, 'b')
+lighting gouraud
+light
+
+%% 1.3 Initialise Simulation (Display in Image view)
+
+%Project points to the image
+p = cam.plot(P, 'Tcam', Tc0);
+
+%camera view and plotting
+cam.clf()
+cam.plot(pStar, '*'); % create the camera view
+cam.hold(true);
+cam.plot(P, 'Tcam', Tc0, 'o'); % create the camera view
+pause(2)
+cam.hold(true);
+cam.plot(P);    % show initial view
+
+
+%Initialise display arrays
+vel_p = [];
+uv_p = [];
+history = [];
+
 %%
 % for i = 1:100-1 %RMRC
 %     qMatrix = 0; %(i,:) whatever the column is initalising as i dont have initial qMatrix 
