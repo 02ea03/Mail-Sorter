@@ -84,6 +84,27 @@ hold on;
         end
     end
     
+         %% wall 2 
+
+    [fWall,vWall,data] = plyread('Wall.ply','tri');
+    vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
+
+    for xOffset = [0.3]
+        for yOffset = [2.1]
+                 for zOffset = [3.1]
+           wallV([1]) = trisurf(fWall,vWall(:,1) + xOffset,vWall(:,2) + yOffset, vWall(:,3) + zOffset ...
+                ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+                 end
+        end
+    end
+        faceNormalsWall = zeros(size(fWall,1),3);
+    for faceIndexWall = 1:size(fWall,1)
+        vWall1 = vWall(fWall(faceIndexWall,1)',:);
+        vWall2 = vWall(fWall(faceIndexWall,2)',:);
+        vWall3 = vWall(fWall(faceIndexWall,3)',:);
+        faceNormalsWall(faceIndexWall,:) = unit(cross(vWall2-vWall1,vWall3-vWall1));
+    end
+    
         %% red frence 02
     [f,v,data] = plyread('redfence.ply','tri');
     vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
@@ -226,8 +247,8 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 
 for i=1:steps
     x(1,i) = (1-s(i))*-1.12 + s(i)*1.6  ; % Points in x
-    x(2,i) = (1-s(i))*0 + 2*sin(i*delta/2); % Points in y
-    x(3,i) = (1-s(i))*4.84 + s(i)*4; % Points in z
+    x(2,i) = (1-s(i))*0 + 1.5*sin(i*delta/2); % Points in y
+    x(3,i) = (1-s(i))*4.84 +sin(i*delta/2)+ s(i)*4; % Points in z
     theta(1,i) = (1-s(i))*0 + s(i)*-176*pi/180;                 % Roll angle
     theta(2,i) = (1-s(i))*-pi/2 + s(i)*1*pi/180;            % Pitch angle
     theta(3,i) = (1-s(i))*0 + s(i)*-0.01*pi/18;            % Yaw angle
@@ -269,7 +290,29 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+    qMatrixx = robotDenso.ikcon(newRoute);
+  
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+% Plot the results
 for i=1:steps-1
     robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
 end
@@ -300,7 +343,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 
 for i=1:steps
     x(1,i) = (1-s(i))*1.6 + s(i)*-0.9; % Points in x
-    x(2,i) = (1-s(i))*0.01 -s(i)*1.1; % Points in y
+    x(2,i) = (1-s(i))*0.01 - s(i)*1.1; % Points in y
     x(3,i) = (1-s(i))*4 + s(i)*4.2;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180;                 % Roll angle 
     theta(2,i) = (1-s(i))*1*pi/180 + s(i)*0.29*pi/180;            % Pitch angle
@@ -342,7 +385,29 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+    qMatrixx = robotDenso.ikcon(newRoute);
+  
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+% Plot the results
 for i=1:steps-1
     delete(paperCircle([2]));
     posEE=robotDenso.fkine(qMatrix(i,:));
@@ -424,7 +489,29 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+    qMatrixx = robotDenso.ikcon(newRoute);
+  
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+% Plot the results
 for i=1:steps-1
     robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
 end
@@ -452,10 +539,11 @@ angleError = zeros(3,steps);    % For plotting trajectory error
 
 % 1.3) Set up trajectory, initial pose
 s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
+
 for i=1:steps
     x(1,i) = (1-s(i))*1.6 + s(i)*-0.9; % Points in x
     x(2,i) = (1-s(i))*0.01 + s(i)*1.16; % Points in y
-    x(3,i) = (1-s(i))*4 + s(i)*4.2;     % Points in z
+    x(3,i) = (1-s(i))*4 + sin(i*delta/2) + s(i)*4.2;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180;   % Roll angle 
     theta(2,i) = (1-s(i))*1*pi/180 + s(i)*0.29*pi/180;      % Pitch angle
     theta(3,i) = (1-s(i))*-0.01*pi/18 + s(i)*80.48*pi/180;  %yaw angle
@@ -496,7 +584,29 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+
+    qMatrixx = robotDenso.ikcon(newRoute);
+   
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+% Plot the results
 for i=1:steps-1
     delete(paperTri([4]));
     posEE=robotDenso.fkine(qMatrix(i,:));
@@ -537,7 +647,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*-0.9 + s(i)*1.6; % Points in x
     x(2,i) = (1-s(i))*1.16 +s(i)*0; % Points in y
-    x(3,i) = (1-s(i))*4.2 + s(i)*4;     % Points in z
+    x(3,i) = (1-s(i))*4.2  +sin(i*delta/2)+ s(i)*4;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180; % Roll angle 
     theta(2,i) = (1-s(i))*0.29*pi/180 + s(i)*1*pi/180;  % Pitch angle
     theta(3,i) = (1-s(i))*80.48*pi/180 + s(i)*-0.01*pi/18; %yaw angle
@@ -578,7 +688,30 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+
+    qMatrixx = robotDenso.ikcon(newRoute);
+   
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+% Plot the results
 for i=1:steps-1
     robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
 end
@@ -606,10 +739,11 @@ angleError = zeros(3,steps);    % For plotting trajectory error
 
 % 1.3) Set up trajectory, initial pose
 s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
+
 for i=1:steps
     x(1,i) = (1-s(i))*1.6 + s(i)*-0.9; % Points in x
     x(2,i) = (1-s(i))*0.01 + s(i)*1.16; % Points in y
-    x(3,i) = (1-s(i))*4 + s(i)*4.2;     % Points in z
+    x(3,i) = (1-s(i))*4 +sin(i*delta/2)+ s(i)*4.2;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180;   % Roll angle 
     theta(2,i) = (1-s(i))*1*pi/180 + s(i)*0.29*pi/180;      % Pitch angle
     theta(3,i) = (1-s(i))*-0.01*pi/18 + s(i)*80.48*pi/180;  %yaw angle
@@ -650,7 +784,30 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+
+    qMatrixx = robotDenso.ikcon(newRoute);
+   
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+%  Plot the results
 for i=1:steps-1
     delete(paperTri([3]));
     posEE=robotDenso.fkine(qMatrix(i,:));
@@ -691,7 +848,7 @@ s = lspb(0,1,steps);                % Trapezoidal trajectory scalar
 for i=1:steps
     x(1,i) = (1-s(i))*-0.9 + s(i)*1.6; % Points in x
     x(2,i) = (1-s(i))*1.16 +s(i)*0; % Points in y
-    x(3,i) = (1-s(i))*4.2 + s(i)*4;     % Points in z
+    x(3,i) = (1-s(i))*4.2 +sin(i*delta/2)+ s(i)*4;     % Points in z
     theta(1,i) = (1-s(i))*-176*pi/180 + s(i)*-176*pi/180; % Roll angle 
     theta(2,i) = (1-s(i))*0.29*pi/180 + s(i)*1*pi/180;  % Pitch angle
     theta(3,i) = (1-s(i))*80.48*pi/180 + s(i)*-0.01*pi/18; %yaw angle
@@ -732,7 +889,29 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+
+    qMatrixx = robotDenso.ikcon(newRoute);
+   
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+% Plot the results
 for i=1:steps-1
     robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
 end
@@ -805,7 +984,29 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+
+    qMatrixx = robotDenso.ikcon(newRoute);
+   
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+% Plot the results
 for i=1:steps-1
     delete(paperCircle([1]));
     posEE=robotDenso.fkine(qMatrix(i,:));
@@ -887,8 +1088,122 @@ for i = 1:steps-1
     positionError(:,i) = x(:,i+1) - T(1:3,4);                               % For plotting
     angleError(:,i) = deltaTheta;                                           % For plotting
 end
-% 1.5) Plot the results
+% Collsion Checking and Re-mapping if needed
+while(1)
+    faces = fWall;
+    vertex = vWall;
+    faceNormals = faceNormalsWall;
+
+    if IsCollision(robotDenso,qMatrix(i,:),faces,vertex,faceNormals,false)
+    disp('Collision detected!!');
+    newRoute = robotDenso.fkine(qMatrix)+ goUp;
+    newRoute(:,:,1) = robotDenso.fkine(qMatrix)- goUp;
+    newRoute(:,:,100) = robotDenso.fkine(qMatrix)- goUp;
+
+    qMatrixx = robotDenso.ikcon(newRoute);
+   
+    else
+    words=['No collision found in the trajectory!'];
+    disp(words); 
+    break;
+    end
+    
+end
+
+% Plot the results
 for i=1:steps-1
     robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
 end
 pause(1);
+
+
+
+
+
+%% IsCollision
+% This is based upon the output of questions 2.5 and 2.6
+% Given a robot model (robot), and trajectory (i.e. joint state vector) (qMatrix)
+% and triangle obstacles in the environment (faces,vertex,faceNormals)
+function result = IsCollision(robot,qMatrix,faces,vertex,faceNormals,returnOnceFound)
+if nargin < 6
+    returnOnceFound = true;
+end
+result = false;
+
+for qIndex = 1:size(qMatrix,1)
+    % Get the transform of every joint (i.e. start and end of every link)
+     tr = GetLinkPoses(qMatrix(qIndex,:), robot);
+
+    % Go through each link and also each triangle face
+    for i = 1 : size(tr,3)-1    
+        for faceIndex = 1:size(faces,1)
+            vertOnPlane = vertex(faces(faceIndex,1)',:);
+            [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+            if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
+                plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
+                display('Intersection');
+                result = true;
+                if returnOnceFound
+                    
+                    return
+                end
+            end
+        end    
+    end
+end
+end
+%% GetLinkPoses
+% q - robot joint angles
+% robot -  seriallink robot model
+% transforms - list of transforms
+function [ transforms ] = GetLinkPoses( q, robotDenso)
+
+links = robotDenso.links;
+transforms = zeros(4, 4, length(links) + 1);
+transforms(:,:,1) = robotDenso.base;
+
+for i = 1:length(links)
+    L = links(1,i);
+    
+    current_transform = transforms(:,:, i);
+    
+    current_transform = current_transform * trotz(q(1,i) + L.offset) * ...
+    transl(0,0, L.d) * transl(L.a,0,0) * trotx(L.alpha);
+    transforms(:,:,i + 1) = current_transform;
+end
+end
+%% IsIntersectionPointInsideTriangle
+% Given a point which is known to be on the same plane as the triangle
+% determine if the point is 
+% inside (result == 1) or 
+% outside a triangle (result ==0 )
+function result = IsIntersectionPointInsideTriangle(intersectP,triangleVerts)
+
+u = triangleVerts(2,:) - triangleVerts(1,:);
+v = triangleVerts(3,:) - triangleVerts(1,:);
+
+uu = dot(u,u);
+uv = dot(u,v);
+vv = dot(v,v);
+
+w = intersectP - triangleVerts(1,:);
+wu = dot(w,u);
+wv = dot(w,v);
+
+D = uv * uv - uu * vv;
+
+% Get and test parametric coords (s and t)
+s = (uv * wv - vv * wu) / D;
+if (s < 0.0 || s > 1.0)        % intersectP is outside Triangle
+    result = 0;
+    return;
+end
+
+t = (uv * wu - uu * wv) / D;
+if (t < 0.0 || (s + t) > 1.0)  % intersectP is outside Triangle
+    result = 0;
+    return;
+end
+
+result = 1;                      % intersectP is in Triangle
+end
