@@ -14,12 +14,14 @@ workspace=[-10 10 -10 10 -0.1 10];
 robotDenso.base = transl(0,0,3.2);
 view(-15,21);
 robotDenso.plot(q0,'workspace',workspace,'scale',scale);
+
 x(1,1) =  1.5;% Points in x input
 x(2,1) =  1.5;% Points in y input
 x(3,1) =  1.5;   % Points in z input
+
 theta(1,1) = -176*pi/180                % Roll angle
 theta(2,1) = 1*pi/180             % Pitch angle
-theta(3,1) = -0.01*pi/18 %Yaw
+theta(3,1) = -0.01*pi/18             %Yaw
 T = [rpy2r(theta(1,1),theta(2,1),theta(3,1)) x(:,1);zeros(1,3) 1];          % Create transformation of first point and angle
 q0 = zeros(1,6);                                                          % Initial guess for joint angles
 qMatrix = robotDenso.ikcon(T,q0)

@@ -1,4 +1,5 @@
 clf;clc;clear all;close all;
+<<<<<<< Updated upstream:environment/environment.m
 %doCameraSpin = false;
 %requires optimization tool box add on
 % Turn on a light (only turn on 1, don't keep turning them on), and make axis equal
@@ -256,6 +257,11 @@ for i = 1:n
     plot3([xT],[yT],[zT]);
 end
 view(-15,21);
+=======
+%% Environment Building
+environment_run();
+
+>>>>>>> Stashed changes:environment/main.m
 %% Robot
 %robotDenso = VP6242(false);
 %q = deg2rad([0 0 0 0 0 0]);
