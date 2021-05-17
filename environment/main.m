@@ -931,10 +931,7 @@ for i=1:steps-1
     robotDenso.animate(qMatrix(i,:)); %(i,:) need for loop
 end
 pause(1);
-%% Mail to start (dont need to run)
-
-%NOT FINISHED For some reason i cannot delete tempBall
-
+%% Mail to start
 % 1.1) Set parameters for the simulation
 t = 10;             % Total time (s)
 deltaT = 0.1;      % Control frequency
@@ -1034,6 +1031,7 @@ axis([-10 10 -10 10 -1 10]);
 tempBall = show(ballLight);
 n = 10;
 for i = 0:0.5:n
+    %delete(tempBall); %For some reason i cannot delete tempBall
     newX=-n+i;
     newY=-3+3*(i/n);
     newZ=4*sin(i/4);
@@ -1046,6 +1044,7 @@ for i = 0:0.5:n
         display('unknown object near by, stopping robot')
         pause(); %robot has to stop
         for i = 0:0.5:n %bouncing back / ball no longer intersecting with the light curtain
+            %delete(tempBall); %For some reason i cannot delete tempBall
             newXup=newX-i;
             newYup=-i/n;
             newZup=newZ+2*sin(i/5);
@@ -1058,7 +1057,7 @@ for i = 0:0.5:n
     end
 end
 %pause();
-%delete(tempBall);
+%delete(tempBall); %For some reason i cannot delete tempBall
 display('No unknown ojbect, continuing')
 % Plot the results
 for i=1:steps-1
