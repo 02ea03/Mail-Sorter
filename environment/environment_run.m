@@ -224,3 +224,38 @@ for zOffset = [3.52]
     end
 end
 disp('Finished Loading Background')
+
+%% option 1
+%setting up the light curtain
+n=10;
+posLight = zeros(n,9);
+for i = 3:6
+    x1(i,:) = 2.4;
+    x2(i,:) = 2.4;
+    x3(i,:) = -2.4;
+    x4(i,:) = -2.4;    
+    y1(i,:) = 3.6;
+    y2(i,:) = -3.6;
+    y3(i,:) = -3.6;
+    y4(i,:) = 3.6;    
+    z(i,:) = i;
+    
+    posLight(i,1) = x1(i,:);
+    posLight(i,2) = x2(i,:);
+    posLight(i,3) = x3(i,:);
+    posLight(i,4) = x4(i,:);
+    posLight(i,5) = y1(i,:);
+    posLight(i,6) = y2(i,:);
+    posLight(i,7) = y3(i,:);
+    posLight(i,8) = y4(i,:);
+    posLight(i,9) = z(i,:);
+end
+%plotting
+
+for i = 1:n
+    xT = [posLight(i,1), posLight(i,2), posLight(i,3), posLight(i,4),posLight(i,1)];
+    yT = [posLight(i,5),posLight(i,6),posLight(i,7),posLight(i,8),posLight(i,5)];
+    zT = [posLight(i,9),posLight(i,9),posLight(i,9),posLight(i,9),posLight(i,9)];
+    plot3([xT],[yT],[zT]);
+end
+view(-15,21);

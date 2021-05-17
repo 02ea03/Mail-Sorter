@@ -6,9 +6,9 @@ hold on;
 workspace=[-10 10 -10 10 -0.1 10];
 %% option 1
 %setting up the light curtain
-n=10;
+n=6;
 posLight = zeros(n,9);
-for i = 1:n
+for i = 3:n
     x1(i,:) = 1;
     x2(i,:) = 1;
     x3(i,:) = -1;
@@ -50,12 +50,14 @@ hold on;
 axis([-5 15 -5 5 -1 10]);
 tempBall = show(ballLight);
 n = 10;
+%%
 for i = 0:0.5:n
     newX=n-i;
     newY=1-i/n;
     newZ=2*sin(i/4);
     transBall = trvec2tform([newX newY newZ]);
     ballLight.Pose = transBall;
+    %delete(tempBall);
     tempBall = show(ballLight);
     pause(0.1);
     [areIntersecting,dist,witnessPoints] = checkCollision(boxLight,ballLight); %collision check
@@ -67,6 +69,7 @@ for i = 0:0.5:n
             newYup=-i/n;
             newZup=newZ+2*sin(i/4);
             transBall = trvec2tform([newXup newYup newZup]);
+            %delete(tempBall);
             ballLight.Pose = transBall;
             tempBall = show(ballLight);
             pause(0.1);
@@ -75,7 +78,7 @@ for i = 0:0.5:n
     end
 end
 pause();
-delete(tempBall);
+%delete(tempBall);
 
 
 
